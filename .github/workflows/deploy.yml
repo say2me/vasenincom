@@ -1,0 +1,57 @@
+name: Deploy to vasenin.com
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -p "${{ secrets.DEPLOY_SSH_PORT }}" "${{ secrets.DEPLOY_SSH_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: Backup current webroot
+        run: |
+          ssh -i ~/.ssh/deploy_key -p "${{ secrets.DEPLOY_SSH_PORT }}" "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}" '
+            set -e
+            mkdir -p "${{ secrets.DEPLOY_BACKUP_DIR }}"
+            tar -czf "${{ secrets.DEPLOY_BACKUP_DIR }}/vasenin.com-$(date +%Y%m%d-%H%M%S).tar.gz" \
+              -C "$(dirname "${{ secrets.DEPLOY_WEBROOT }}")" "$(basename "${{ secrets.DEPLOY_WEBROOT }}")"
+          '
+
+      - name: Clear webroot
+        run: |
+          ssh -i ~/.ssh/deploy_key -p "${{ secrets.DEPLOY_SSH_PORT }}" "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}" \
+            "find '${{ secrets.DEPLOY_WEBROOT }}' -mindepth 1 -delete"
+
+      - name: Upload index.html
+        run: |
+          scp -i ~/.ssh/deploy_key -P "${{ secrets.DEPLOY_SSH_PORT }}" index.html \
+            "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}:${{ secrets.DEPLOY_WEBROOT }}/index.html"
+
+      - name: Fix ownership
+        run: |
+          ssh -i ~/.ssh/deploy_key -p "${{ secrets.DEPLOY_SSH_PORT }}" "${{ secrets.DEPLOY_SSH_USER }}@${{ secrets.DEPLOY_SSH_HOST }}" \
+            "chown www-data:www-data '${{ secrets.DEPLOY_WEBROOT }}/index.html'"
+
+      - name: Verify deployment
+        run: |
+          status=$(curl -s -o /dev/null -w "%{http_code}" "https://vasenin.com/")
+          echo "HTTP status: $status"
+          if [ "$status" != "200" ]; then
+            echo "::error::Deployed site did not return HTTP 200"
+            exit 1
+          fi
+
+      - name: Clean up
+        if: always()
+        run: rm -f ~/.ssh/deploy_key
