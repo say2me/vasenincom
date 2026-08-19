@@ -42,7 +42,6 @@
     position:relative;
     width:100%;
     height:100dvh;
-    min-height:480px;
     background:linear-gradient(180deg, var(--sky-top), var(--sky-low));
     overflow:hidden;
     touch-action:none;
@@ -110,10 +109,19 @@
   .overlay{
     position:absolute; inset:0;
     z-index:10;
-    display:flex; align-items:center; justify-content:center;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
     background:rgba(8,10,5,0.9);
     cursor:pointer;
     padding:20px;
+  }
+  .overlay::before, .overlay::after{
+    content:'';
+    margin:auto;
+    flex-shrink:0;
   }
   .overlay.hidden{ display:none; }
   #startScreen{ background:rgba(4,10,6,0.92); }
@@ -222,6 +230,7 @@
   .panel{
     max-width:560px;
     width:100%;
+    flex-shrink:0;
     text-align:center;
     border:4px solid var(--panel-line);
     border-radius:0;
@@ -352,6 +361,26 @@
     .tagline{ font-size:11px; }
     .big-num{ font-size:20px; }
     .arcade-btn{ font-size:11px; padding:10px 16px; }
+  }
+  @media (max-height:500px){
+    .overlay{ padding:12px 20px; }
+    .panel{ padding:12px 18px 10px; }
+    .marquee-credit{ margin-bottom:6px; }
+    #startPanel .starring{ font-size:10px; letter-spacing:2px; margin-bottom:2px; }
+    #startPanel .star-name{ font-size:16px; }
+    #startPanel .marquee-rule{ width:100px; margin:6px auto 0; }
+    .crt-title{ font-size:22px; letter-spacing:1px; margin:6px 0; line-height:1.15; }
+    .crt-title.small{ font-size:18px; margin:0 0 8px; }
+    .tagline{ font-size:11px; line-height:1.35; margin:0 0 8px; }
+    .legend{ margin-bottom:4px; }
+    .chip{ width:24px; height:24px; margin:2px; }
+    .chip svg{ width:13px; height:13px; }
+    .meteor-warning{ margin:4px 0 10px; font-size:9px; }
+    .arcade-btn{ padding:8px 14px; margin:4px; }
+    .controls-hint{ margin-top:6px; font-size:9px; }
+    .score-row{ margin:8px 0 4px; }
+    .new-best{ margin-bottom:6px; }
+    #gameoverPanel .also-roles{ margin:6px 0 2px; font-size:11px; }
   }
 </style>
 <div id="arcade">
