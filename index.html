@@ -537,8 +537,7 @@
     ctx.imageSmoothingEnabled = false;
 
     var isSmallScreen = Math.min(W,H) <= 480;
-    var isPortrait = H > W;
-    responsiveScale = isSmallScreen ? (isPortrait ? 0.55 : 0.75) : 1;
+    responsiveScale = isSmallScreen ? 0.55 : 1;
     SHIP_SCALE = BASE_SHIP_SCALE * responsiveScale;
     PLAYER_R = 15 * SHIP_SCALE;
     boundMarginX = Math.max(30, Math.round(90 * responsiveScale));
