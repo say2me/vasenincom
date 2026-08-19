@@ -448,9 +448,12 @@
   var MAX_LIVES = 3;
   var ACCEL = 2200;
   var MAX_SPEED = 430;
-  var SHIP_SCALE = 3;
+  var BASE_SHIP_SCALE = 3;
+  var SHIP_SCALE = BASE_SHIP_SCALE;
   var PLAYER_R = 15*SHIP_SCALE;
   var INVULN_TIME = 1.4;
+  var responsiveScale = 1;
+  var boundMarginX = 90, boundMarginYTop = 130, boundMarginYBottom = 90;
 
   var W = 0, H = 0, DPR = 1;
   var perfNow = 0;
@@ -533,14 +536,23 @@
     ctx.setTransform(1/PIXEL_SCALE,0,0,1/PIXEL_SCALE,0,0);
     ctx.imageSmoothingEnabled = false;
 
+    var isSmallScreen = Math.min(W,H) <= 480;
+    var isPortrait = H > W;
+    responsiveScale = isSmallScreen ? (isPortrait ? 0.55 : 0.75) : 1;
+    SHIP_SCALE = BASE_SHIP_SCALE * responsiveScale;
+    PLAYER_R = 15 * SHIP_SCALE;
+    boundMarginX = Math.max(30, Math.round(90 * responsiveScale));
+    boundMarginYTop = Math.max(55, Math.round(130 * responsiveScale));
+    boundMarginYBottom = Math.max(30, Math.round(90 * responsiveScale));
+
     initScenery();
     clampPlayer();
   }
 
   function clampPlayer(){
     if (!W || !H) return;
-    player.x = Math.min(Math.max(player.x, 90), W-90);
-    player.y = Math.min(Math.max(player.y, 130), H-90);
+    player.x = Math.min(Math.max(player.x, boundMarginX), W-boundMarginX);
+    player.y = Math.min(Math.max(player.y, boundMarginYTop), H-boundMarginYBottom);
   }
 
   function initScenery(){
@@ -623,7 +635,7 @@
 
   function spawnLogo(progress){
     var t = TECHS[Math.floor(Math.random()*TECHS.length)];
-    var w = 63, h = 63;
+    var w = 63*responsiveScale, h = 63*responsiveScale;
     var y = 70 + Math.random()*Math.max(H-140,40);
     logos.push({
       x:W+60, baseY:y, y:y, w:w, h:h,
@@ -633,7 +645,7 @@
     });
   }
   function spawnMeteor(progress){
-    var r = 16 + Math.pow(Math.random(),1.6)*26;
+    var r = (16 + Math.pow(Math.random(),1.6)*26) * responsiveScale;
     var y = 60 + Math.random()*Math.max(H-140,40);
     meteors.push({
       x:W+r+40, y:y, r:r,
@@ -746,7 +758,7 @@
     player.x += player.vx*dt;
     player.y += player.vy*dt;
 
-    var minX=90, maxX=W-90, minY=130, maxY=H-90;
+    var minX=boundMarginX, maxX=W-boundMarginX, minY=boundMarginYTop, maxY=H-boundMarginYBottom;
     if (player.x<minX){ player.x=minX; player.vx=0; }
     if (player.x>maxX){ player.x=maxX; player.vx=0; }
     if (player.y<minY){ player.y=minY; player.vy=0; }
