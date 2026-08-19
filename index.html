@@ -257,9 +257,14 @@
   .crt-title.small{ font-size:clamp(20px,5vw,30px); }
   .tagline{
     color:var(--cream-dim);
-    font-size:13px;
-    line-height:1.7;
+    font-size:16px;
+    line-height:1.6;
     margin:0 0 18px;
+  }
+  .tagline strong{
+    color:var(--amber);
+    font-weight:700;
+    font-style:normal;
   }
   .legend{ margin-bottom:10px; }
   .chip{
@@ -349,35 +354,24 @@
   @media (prefers-reduced-motion: reduce){
     .controls-hint, .new-best{ animation:none; }
   }
-  @media (max-width:480px){
-    .panel{ padding:20px 14px 16px; }
-    .score-row{ gap:16px; }
-    .crt-title{ font-size:clamp(18px,7.5vw,28px); letter-spacing:1px; }
-    .crt-title.small{ font-size:clamp(16px,6.5vw,22px); }
-    #startPanel .starring{ font-size:11px; letter-spacing:3px; }
-    #startPanel .star-name{ font-size:18px; }
-    #gameoverPanel .also-roles{ font-size:12px; }
-    .tagline{ font-size:11px; }
-    .big-num{ font-size:20px; }
-    .arcade-btn{ font-size:11px; padding:10px 16px; }
-  }
-  @media (max-height:500px){
+  @media (max-width:480px), (max-height:500px){
     .overlay{ padding:12px 20px; }
     .panel{ padding:12px 18px 10px; }
     .marquee-credit{ margin-bottom:6px; }
     #startPanel .starring{ font-size:10px; letter-spacing:2px; margin-bottom:2px; }
     #startPanel .star-name{ font-size:16px; }
     #startPanel .marquee-rule{ width:100px; margin:6px auto 0; }
-    .crt-title{ font-size:22px; letter-spacing:1px; margin:6px 0; line-height:1.15; }
+    .crt-title{ font-size:20px; letter-spacing:1px; margin:6px 0; line-height:1.15; }
     .crt-title.small{ font-size:18px; margin:0 0 8px; }
-    .tagline{ font-size:11px; line-height:1.35; margin:0 0 8px; }
+    .tagline{ font-size:13px; line-height:1.4; margin:0 0 8px; }
     .legend{ margin-bottom:4px; }
     .chip{ width:24px; height:24px; margin:2px; }
     .chip svg{ width:13px; height:13px; }
     .meteor-warning{ margin:4px 0 10px; font-size:9px; }
-    .arcade-btn{ padding:8px 14px; margin:4px; }
+    .arcade-btn{ font-size:11px; padding:8px 14px; margin:4px; }
     .controls-hint{ margin-top:6px; font-size:9px; }
-    .score-row{ margin:8px 0 4px; }
+    .score-row{ gap:16px; margin:8px 0 4px; }
+    .big-num{ font-size:20px; }
     .new-best{ margin-bottom:6px; }
     #gameoverPanel .also-roles{ margin:6px 0 2px; font-size:11px; }
   }
@@ -400,7 +394,7 @@
         <div class="marquee-rule"></div>
       </div>
       <h1 class="crt-title">STACK<br>DEFENDER</h1>
-      <p class="tagline">Fly the stack. Catch every language and tool that made the cut.<br>Dodge the flak &mdash; three hits and you're grounded.</p>
+      <p class="tagline">Fly the stack. Catch every language and tool that made the cut.<br><strong>Dodge the flak &mdash; three hits and you're grounded.</strong></p>
       <div class="legend" id="legend"></div>
       <div class="meteor-warning"><span class="mini-flak"></span> AVOID</div>
       <button class="arcade-btn" id="launchBtn" type="button">PLAY</button>
@@ -564,7 +558,7 @@
     ctx.setTransform(1/PIXEL_SCALE,0,0,1/PIXEL_SCALE,0,0);
     ctx.imageSmoothingEnabled = false;
 
-    var isSmallScreen = Math.min(W,H) <= 480;
+    var isSmallScreen = W <= 480 || H <= 500;
     responsiveScale = isSmallScreen ? 0.55 : 1;
     SHIP_SCALE = BASE_SHIP_SCALE * responsiveScale;
     PLAYER_R = 15 * SHIP_SCALE;
