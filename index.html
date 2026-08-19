@@ -560,7 +560,7 @@
 
     var isSmallScreen = W <= 480 || H <= 500;
     responsiveScale = isSmallScreen ? 0.55 : 1;
-    SHIP_SCALE = BASE_SHIP_SCALE * responsiveScale;
+    SHIP_SCALE = BASE_SHIP_SCALE * (isSmallScreen ? 0.4 : 1);
     PLAYER_R = 15 * SHIP_SCALE;
     boundMarginX = Math.max(30, Math.round(90 * responsiveScale));
     boundMarginYTop = Math.max(55, Math.round(130 * responsiveScale));
