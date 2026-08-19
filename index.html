@@ -342,8 +342,16 @@
     .controls-hint, .new-best{ animation:none; }
   }
   @media (max-width:480px){
-    .panel{ padding:26px 18px 20px; }
-    .score-row{ gap:20px; }
+    .panel{ padding:20px 14px 16px; }
+    .score-row{ gap:16px; }
+    .crt-title{ font-size:clamp(18px,7.5vw,28px); letter-spacing:1px; }
+    .crt-title.small{ font-size:clamp(16px,6.5vw,22px); }
+    #startPanel .starring{ font-size:11px; letter-spacing:3px; }
+    #startPanel .star-name{ font-size:18px; }
+    #gameoverPanel .also-roles{ font-size:12px; }
+    .tagline{ font-size:11px; }
+    .big-num{ font-size:20px; }
+    .arcade-btn{ font-size:11px; padding:10px 16px; }
   }
 </style>
 <div id="arcade">
@@ -367,7 +375,7 @@
       <p class="tagline">Fly the stack. Catch every language and tool that made the cut.<br>Dodge the flak &mdash; three hits and you're grounded.</p>
       <div class="legend" id="legend"></div>
       <div class="meteor-warning"><span class="mini-flak"></span> AVOID</div>
-      <button class="arcade-btn" id="launchBtn" type="button">TAKE OFF</button>
+      <button class="arcade-btn" id="launchBtn" type="button">PLAY</button>
       <div class="controls-hint">ARROWS / WASD TO FLY &nbsp;&middot;&nbsp; DRAG ON TOUCH &nbsp;&middot;&nbsp; SPACE TO START</div>
     </div>
   </div>
@@ -386,7 +394,7 @@
         <a class="arcade-btn link" id="linkedinLink" href="https://www.linkedin.com/in/slava-vasenin/" target="_blank" rel="noopener noreferrer">LINKEDIN &#8599;</a>
       </div>
       <button class="arcade-btn" id="retryBtn" type="button">&#8635; PLAY AGAIN</button>
-      <div class="controls-hint">TAP ANYWHERE OR PRESS SPACE</div>
+      <div class="controls-hint">PRESS PLAY AGAIN OR SPACE</div>
     </div>
   </div>
 </div>
@@ -465,6 +473,10 @@
   function safeGetInt(k,d){ var n = parseInt(safeGet(k),10); return isFinite(n) ? n : d; }
 
   function lerp(a,b,t){ return a + (b-a)*t; }
+
+  function isMobileViewport(){
+    return window.matchMedia && window.matchMedia('(max-width:480px)').matches;
+  }
 
   function livesPips(){
     livesEl.innerHTML = '';
@@ -1046,9 +1058,9 @@
   window.addEventListener('pointerup', function(){ pointer.active = false; });
   window.addEventListener('pointercancel', function(){ pointer.active = false; });
 
-  startScreen.addEventListener('click', function(){ startGame(); });
+  startScreen.addEventListener('click', function(){ if (!isMobileViewport()) startGame(); });
   launchBtn.addEventListener('click', function(e){ e.stopPropagation(); startGame(); });
-  gameoverScreen.addEventListener('click', function(){ startGame(); });
+  gameoverScreen.addEventListener('click', function(){ if (!isMobileViewport()) startGame(); });
   retryBtn.addEventListener('click', function(e){ e.stopPropagation(); startGame(); });
   githubLink.addEventListener('click', function(e){ e.stopPropagation(); });
   linkedinLink.addEventListener('click', function(e){ e.stopPropagation(); });
