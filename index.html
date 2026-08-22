@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-<meta name="description" content="Slava Vasenin's Stack Defender - an 8-bit style arcade game where a pixel-art ship collects real programming language and tool logos while dodging flak across a cosmic starfield.">
+<meta name="description" content="Slava Vasenin — Stack Defender arcade game">
 </head>
 <body>
 <title>Slava Vasenin &mdash; Stack Defender</title>
@@ -85,15 +85,21 @@
     position:absolute; top:14px; right:18px;
     z-index:6;
     width:34px;height:34px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
     border:2px solid var(--panel-line);
     background:rgba(28,34,15,0.75);
     color:var(--cream-dim);
     border-radius:0;
     cursor:pointer;
-    font-size:15px;
     line-height:1;
   }
+  #muteBtn svg{ width:17px; height:17px; display:block; }
+  #muteBtn .icon-off{ display:none; }
   #muteBtn.is-muted{ color:var(--red); }
+  #muteBtn.is-muted .icon-on{ display:none; }
+  #muteBtn.is-muted .icon-off{ display:block; }
   #brandTag{
     position:absolute; left:14px; bottom:10px;
     z-index:5;
@@ -393,7 +399,18 @@
     <div class="hud-score">SCORE <span id="scoreEl">0000</span></div>
     <div class="hud-lives" id="livesEl"></div>
   </div>
-  <button id="muteBtn" aria-label="Toggle sound" title="Toggle sound">&#9834;</button>
+  <button id="muteBtn" aria-label="Toggle sound" title="Toggle sound">
+    <svg class="icon-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M4 10v4h3l4 4V6l-4 4H4z" fill="currentColor" stroke="none"/>
+      <path d="M15.5 9a3.5 3.5 0 0 1 0 6"/>
+      <path d="M17.8 6.7a7 7 0 0 1 0 10.6"/>
+    </svg>
+    <svg class="icon-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M4 10v4h3l4 4V6l-4 4H4z" fill="currentColor" stroke="none"/>
+      <line x1="16" y1="9" x2="21" y2="15"/>
+      <line x1="21" y1="9" x2="16" y2="15"/>
+    </svg>
+  </button>
   <div id="brandTag">STACK DEFENDER &middot; vasenin.com</div>
 
   <div id="startScreen" class="overlay">
@@ -1065,7 +1082,6 @@
   function toggleMute(){
     muted = !muted;
     safeSet('sd_muted', muted ? '1' : '0');
-    muteBtn.textContent = muted ? '\u2715' : '\u266A';
     muteBtn.classList.toggle('is-muted', muted);
   }
 
@@ -1134,7 +1150,6 @@
   livesPips();
   var storedMute = safeGet('sd_muted');
   muted = storedMute===null ? true : storedMute==='1';
-  muteBtn.textContent = muted ? '\u2715' : '\u266A';
   muteBtn.classList.toggle('is-muted', muted);
   resize();
   renderHud();
